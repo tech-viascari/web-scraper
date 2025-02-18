@@ -12,7 +12,7 @@ app.get('/fetch-links', async (req, res) => {
   }
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle2' });
 
@@ -25,10 +25,7 @@ app.get('/fetch-links', async (req, res) => {
     });
 
     await browser.close();
-
-    // Filter out duplicate and missing values
     const uniqueLinks = Array.from(new Set(links)).filter(link => link);
-
     res.json(uniqueLinks);
   } catch (error) {
     res.status(500).send('Error fetching links: ' + error.message);
